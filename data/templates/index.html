@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome | Todo App</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #f4f7f8;
+        }
+        .container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .login-btn {
+            background-color: #007BFF;
+            color: white;
+        }
+        .register-btn {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Todo App</h1>
+        <p>Organize your tasks easily and stay productive.</p>
+       <<a href="{{ url_for('login') }}">
+    <button class="login-btn">Login</button>
+</a>
+<a href="{{ url_for('register') }}">
+    <button class="register-btn">Register</button>
+</a>
+
+
+
+    </div>
+</body>
+</html>
