@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed{% endblock %}
+{% block content %}
+<h1>Order #{{ order.id }} confirmed</h1>
+<p>Status: <strong>{{ order.status }}</strong></p>
+<p>Shipping to: {{ order.shipping_address }}</p>
+<table>
+  <thead><tr><th>Product</th><th>Unit Price</th><th>Qty</th><th>Line Total</th></tr></thead>
+  <tbody>
+    {% for item in order.items %}
+    <tr>
+      <td>{{ item.product_name }}</td>
+      <td>₹{{ '%.2f' % (item.unit_price_cents / 100) }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>₹{{ '%.2f' % item.line_total }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="total-row"><td colspan="3">Total</td><td>₹{{ '%.2f' % order.total }}</td></tr>
+  </tbody>
+</table>
+<a class="btn" style="margin-top:16px; display:inline-block;" href="{{ url_for('index') }}">Continue Shopping</a>
+{% endblock %}

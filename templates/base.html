@@ -1,20 +1,33 @@
-<! DOCTYPE html>
+<!doctype html>
 <html lang="en">
-   <head>
-     <meta charset="UTF-8">
-     <title>User Form</title>
-
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Shop{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-       {% with messages = get_flashed_messages(with_categories=true) %}
-       {% if messages %}
-           {% for category, message in messages %}
-                 <div class="alert {{ category }}">{{ message }}</div>
-        {% endfor %}
-       {% endif %}
-       {% endwith %}
-       {% block content %}{% endblock %}
-</div>
+  <nav>
+    <a class="brand" href="{{ url_for('index') }}">Shop</a>
+    <div class="links">
+      <a href="{{ url_for('index') }}">Products</a>
+      <a href="{{ url_for('view_cart') }}">Cart{% if session.get('cart') %} ({{ session['cart'].values() | sum }}){% endif %}</a>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('my_orders') }}">My Orders</a>
+        {% if current_user.is_admin %}<a href="{{ url_for('admin_products') }}">Admin</a>{% endif %}
+        <a href="{{ url_for('logout') }}">Logout ({{ current_user.name }})</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </div>
+  </nav>
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
 </body>
 </html>
