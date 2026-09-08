@@ -1,0 +1,43 @@
+{% extends "shop/base.html" %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+
+<h1 class="section-title">Your Cart</h1>
+
+{% if items %}
+<div class="data-table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Line Total</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td><a href="{% url 'shop:product_detail' item.product.pk %}">{{ item.product.name }}</a></td>
+        <td>₹{{ item.product.price }}</td>
+        <td>
+          <form class="inline-form" method="post" action="{% url 'shop:update_cart' item.product.pk %}">
+            {% csrf_token %}
+            <input class="qty-input" type="number" name="quantity" value="{{ item.qty }}" min="1" max="{{ item.product.stock }}">
+            <button class="btn btn-secondary" type="submit">Update</button>
+          </form>
+        </td>
+        <td>₹{{ item.line_total }}</td>
+        <td>
+          <form class="inline-form" method="post" action="{% url 'shop:remove_from_cart' item.product.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row"><td colspan="3">Total</td><td colspan="2">₹{{ total }}</td></tr>
+    </tbody>
+  </table>
+</div>
+<a class="btn" style="margin-top:20px; display:inline-block;" href="{% url 'shop:checkout' %}">Proceed to Checkout</a>
+{% else %}
+<div class="empty-state">Your cart is empty. <a href="{% url 'shop:index' %}">Browse products</a>.</div>
+{% endif %}
+
+{% endblock %}

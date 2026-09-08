@@ -1,0 +1,28 @@
+{% extends "shop/base.html" %}
+{% block title %}My Orders{% endblock %}
+{% block content %}
+
+<h1 class="section-title">My Orders</h1>
+
+{% if orders %}
+<div class="data-table-wrap">
+  <table class="data-table">
+    <thead><tr><th>Order #</th><th>Date</th><th>Status</th><th>Total</th><th></th></tr></thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+        <td><span class="status-badge {{ order.status }}">{{ order.get_status_display }}</span></td>
+        <td>₹{{ order.total }}</td>
+        <td><a href="{% url 'shop:order_confirmation' order.pk %}">View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">You haven't placed any orders yet. <a href="{% url 'shop:index' %}">Start shopping</a>.</div>
+{% endif %}
+
+{% endblock %}

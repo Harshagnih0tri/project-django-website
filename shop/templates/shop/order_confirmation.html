@@ -1,0 +1,28 @@
+{% extends "shop/base.html" %}
+{% block title %}Order Confirmed{% endblock %}
+{% block content %}
+
+<h1 class="section-title">Order #{{ order.id }} confirmed</h1>
+<p style="margin-bottom:6px;">Status: <span class="status-badge {{ order.status }}">{{ order.get_status_display }}</span></p>
+<p style="margin-bottom:20px; color: var(--sonic-silver);">Shipping to: {{ order.shipping_address }}</p>
+
+<div class="data-table-wrap">
+  <table class="data-table">
+    <thead><tr><th>Product</th><th>Unit Price</th><th>Qty</th><th>Line Total</th></tr></thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr>
+        <td>{{ item.product_name }}</td>
+        <td>₹{{ item.unit_price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₹{{ item.line_total }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="total-row"><td colspan="3">Total</td><td>₹{{ order.total }}</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<a class="btn" style="margin-top:20px; display:inline-block;" href="{% url 'shop:index' %}">Continue Shopping</a>
+
+{% endblock %}

@@ -1,0 +1,186 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Shop{% endblock %} · Django E-Commerce Demo</title>
+
+  <link rel="shortcut icon" href="{% static 'images/logo/favicon.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'vendor/anon.css' %}">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="overlay" data-overlay></div>
+
+  <header>
+    <div class="header-main">
+      <div class="container">
+
+        <a href="{% url 'shop:index' %}" class="header-logo text-logo">
+          <ion-icon name="bag-handle" style="color: var(--salmon-pink); font-size: 1.4rem; margin-right: 6px; vertical-align: -3px;"></ion-icon>Shop
+        </a>
+
+        <form class="header-search-container" action="{% url 'shop:index' %}" method="get">
+          <input type="search" name="q" value="{{ request.GET.q }}" class="search-field" placeholder="Search products...">
+          <button class="search-btn" type="submit">
+            <ion-icon name="search-outline"></ion-icon>
+          </button>
+        </form>
+
+        <div class="header-user-actions">
+          {% if user.is_authenticated %}
+            <div class="user-menu">
+              <button class="action-btn" type="button">
+                <ion-icon name="person-outline"></ion-icon>
+              </button>
+              <div class="user-menu-dropdown">
+                <p class="user-menu-hello">Hi, {{ user.username }}</p>
+                <a href="{% url 'shop:my_orders' %}">My Orders</a>
+                {% if user.is_staff %}
+                  <a href="{% url 'shop:admin_products' %}">Manage Products</a>
+                  <a href="/admin/">Django Admin</a>
+                {% endif %}
+                <a href="{% url 'shop:logout' %}">Log out</a>
+              </div>
+            </div>
+          {% else %}
+            <a class="action-btn" href="{% url 'shop:login' %}" title="Log in">
+              <ion-icon name="person-outline"></ion-icon>
+            </a>
+          {% endif %}
+
+          <a class="action-btn" href="{% url 'shop:view_cart' %}" title="Cart">
+            <ion-icon name="bag-handle-outline"></ion-icon>
+            <span class="count">{{ cart_count }}</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <nav class="desktop-navigation-menu">
+      <div class="container">
+        <ul class="desktop-menu-category-list">
+          <li class="menu-category"><a href="{% url 'shop:index' %}" class="menu-title">Home</a></li>
+          <li class="menu-category"><a href="{% url 'shop:index' %}#shop" class="menu-title">Shop</a></li>
+          {% if user.is_authenticated %}
+            <li class="menu-category"><a href="{% url 'shop:my_orders' %}" class="menu-title">My Orders</a></li>
+          {% endif %}
+          {% if user.is_staff %}
+            <li class="menu-category"><a href="{% url 'shop:admin_products' %}" class="menu-title">Manage Products</a></li>
+          {% endif %}
+          {% if not user.is_authenticated %}
+            <li class="menu-category"><a href="{% url 'shop:register' %}" class="menu-title">Register</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+
+    <div class="mobile-bottom-navigation">
+      <a class="action-btn" href="{% url 'shop:index' %}"><ion-icon name="home-outline"></ion-icon></a>
+      <a class="action-btn" href="{% url 'shop:view_cart' %}">
+        <ion-icon name="bag-handle-outline"></ion-icon>
+        <span class="count">{{ cart_count }}</span>
+      </a>
+      {% if user.is_authenticated %}
+        <a class="action-btn" href="{% url 'shop:my_orders' %}"><ion-icon name="receipt-outline"></ion-icon></a>
+        <a class="action-btn" href="{% url 'shop:logout' %}"><ion-icon name="log-out-outline"></ion-icon></a>
+      {% else %}
+        <a class="action-btn" href="{% url 'shop:login' %}"><ion-icon name="person-outline"></ion-icon></a>
+      {% endif %}
+      <button class="action-btn" type="button" data-mobile-menu-open-btn>
+        <ion-icon name="menu-outline"></ion-icon>
+      </button>
+    </div>
+
+    <nav class="mobile-navigation-menu" data-mobile-menu>
+      <div class="menu-top">
+        <h2 class="menu-title">Menu</h2>
+        <button class="menu-close-btn" type="button" data-mobile-menu-close-btn>
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <ul class="mobile-menu-category-list">
+        <li><a href="{% url 'shop:index' %}">Home</a></li>
+        <li><a href="{% url 'shop:view_cart' %}">Cart ({{ cart_count }})</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'shop:my_orders' %}">My Orders</a></li>
+          {% if user.is_staff %}
+            <li><a href="{% url 'shop:admin_products' %}">Manage Products</a></li>
+            <li><a href="/admin/">Django Admin</a></li>
+          {% endif %}
+          <li><a href="{% url 'shop:logout' %}">Log out ({{ user.username }})</a></li>
+        {% else %}
+          <li><a href="{% url 'shop:login' %}">Log in</a></li>
+          <li><a href="{% url 'shop:register' %}">Register</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container page-container">
+      {% if messages %}
+        <ul class="site-messages">
+          {% for message in messages %}
+            <li class="site-message {{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-nav">
+      <div class="container">
+
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">About this project</h2></li>
+          <li class="footer-nav-item">
+            <p class="footer-about-text">A demo e-commerce storefront built end-to-end on Django — auth, catalog, cart, checkout, and order history.</p>
+          </li>
+        </ul>
+
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Shop</h2></li>
+          <li class="footer-nav-item"><a href="{% url 'shop:index' %}" class="footer-nav-link">All Products</a></li>
+          <li class="footer-nav-item"><a href="{% url 'shop:view_cart' %}" class="footer-nav-link">Cart</a></li>
+          {% if user.is_authenticated %}
+            <li class="footer-nav-item"><a href="{% url 'shop:my_orders' %}" class="footer-nav-link">My Orders</a></li>
+          {% else %}
+            <li class="footer-nav-item"><a href="{% url 'shop:login' %}" class="footer-nav-link">Log In</a></li>
+            <li class="footer-nav-item"><a href="{% url 'shop:register' %}" class="footer-nav-link">Register</a></li>
+          {% endif %}
+        </ul>
+
+        <ul class="footer-nav-list">
+          <li class="footer-nav-item"><h2 class="nav-title">Built by Harsh Sharma</h2></li>
+          <li class="footer-nav-item"><a href="https://github.com/harshagnih0tri" class="footer-nav-link" target="_blank" rel="noopener">GitHub</a></li>
+          <li class="footer-nav-item"><a href="https://linkedin.com/in/harsh231104" class="footer-nav-link" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p class="copyright">
+          Demo project by Harsh Sharma — built on Django. Front-end layout adapted from the open-source
+          <a href="https://github.com/codewithsadee/anon-ecommerce-website" target="_blank" rel="noopener">Anon</a> template.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/site.js' %}"></script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

@@ -3,6 +3,6 @@ __pycache__/
 venv/
 v18/
 .venv/
-instance/
-*.db
+db.sqlite3
+staticfiles/
 .env

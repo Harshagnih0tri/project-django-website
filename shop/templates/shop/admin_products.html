@@ -1,0 +1,33 @@
+{% extends "shop/base.html" %}
+{% block title %}Manage Products{% endblock %}
+{% block content %}
+
+<h1 class="section-title">Manage Products</h1>
+<a class="btn" href="{% url 'shop:admin_new_product' %}">+ New Product</a>
+
+<div class="data-table-wrap">
+  <table class="data-table" style="margin-top:18px;">
+    <thead><tr><th>Name</th><th>Price</th><th>Stock</th><th>Active</th><th></th></tr></thead>
+    <tbody>
+      {% for product in products %}
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>₹{{ product.price }}</td>
+        <td>{{ product.stock }}</td>
+        <td>{{ product.is_active|yesno:"Yes,No" }}</td>
+        <td style="white-space: nowrap;">
+          <a href="{% url 'shop:admin_edit_product' product.pk %}">Edit</a>
+          {% if product.is_active %}
+          <form class="inline-form" method="post" action="{% url 'shop:admin_delete_product' product.pk %}" style="margin-left:10px;">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Remove</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

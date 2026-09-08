@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+
+<h1 class="section-title">Checkout</h1>
+
+<div class="form-card wide">
+  <h3 style="margin-bottom:14px; font-size: var(--fs-4);">Order Summary</h3>
+  <table class="data-table" style="margin-bottom:22px;">
+    <tbody>
+      {% for item in items %}
+      <tr><td>{{ item.product.name }} &times; {{ item.qty }}</td><td>₹{{ item.line_total }}</td></tr>
+      {% endfor %}
+      <tr class="total-row"><td>Total</td><td>₹{{ total }}</td></tr>
+    </tbody>
+  </table>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="{{ form.shipping_address.id_for_label }}">Shipping Address</label>
+      {{ form.shipping_address }}
+      {% for error in form.shipping_address.errors %}<div class="form-errors">{{ error }}</div>{% endfor %}
+    </div>
+    <button class="btn" type="submit">Place Order</button>
+  </form>
+</div>
+
+{% endblock %}

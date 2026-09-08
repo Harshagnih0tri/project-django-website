@@ -1,0 +1,66 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+{% if not query %}
+<div class="hero">
+  <div class="hero-content">
+    <p class="hero-subtitle">Demo storefront</p>
+    <h1 class="hero-title">A real Django backend behind every click.</h1>
+    <p class="hero-text">Browse the catalog, add items to your cart, and check out — auth, stock tracking, and order history are all wired up.</p>
+    <a href="#shop" class="banner-btn">Shop now</a>
+  </div>
+</div>
+{% endif %}
+
+<div id="shop">
+  <h2 class="section-title">
+    {% if query %}Search results for "{{ query }}"{% else %}All Products{% endif %}
+  </h2>
+
+  {% if products %}
+  <div class="product-grid">
+    {% for product in products %}
+    <div class="showcase">
+      <div class="showcase-banner">
+        <a href="{% url 'shop:product_detail' product.pk %}">
+          {% if product.image_src %}
+            <img src="{{ product.image_src }}" alt="{{ product.name }}" class="product-img default">
+          {% else %}
+            <div class="showcase-img-placeholder"><ion-icon name="image-outline"></ion-icon></div>
+          {% endif %}
+        </a>
+        {% if product.stock == 0 %}
+          <div class="showcase-badge black">Sold out</div>
+        {% endif %}
+      </div>
+      <div class="showcase-content">
+        <a href="{% url 'shop:product_detail' product.pk %}">
+          <h4 class="showcase-title">{{ product.name }}</h4>
+        </a>
+        <div class="price-box">
+          <p class="price">₹{{ product.price }}</p>
+        </div>
+        <p class="pd-stock">{{ product.stock }} in stock</p>
+        <form method="post" action="{% url 'shop:add_to_cart' product.pk %}">
+          {% csrf_token %}
+          <input type="hidden" name="quantity" value="1">
+          <button class="btn btn-block" type="submit" {% if product.stock == 0 %}disabled{% endif %}>Add to Cart</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    {% if query %}
+      No products match "{{ query }}". <a href="{% url 'shop:index' %}">Clear search</a>.
+    {% else %}
+      No products yet.
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
